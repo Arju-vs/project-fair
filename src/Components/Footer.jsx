@@ -40,7 +40,7 @@ const Footer = () => {
             <a href='https://www.facebook.com/' style={{textDecoration:'none', color:'white'}} target='_blank'><i className="fa-brands fa-facebook"></i></a>
             <a href='https://www.linkedin.com/' style={{textDecoration:'none', color:'white'}} target='_blank'><i className="fa-brands fa-linkedin"></i></a>
             <a href='https://github.com/Arju-vs' style={{textDecoration:'none', color:'white'}} target='_blank'><i className="fa-brands fa-github"></i></a>
-            <a href='#' style={{textDecoration:'none', color:'white'}} target='_blank'><i class="fa-solid fa-phone"></i></a>
+            <a href='#' style={{textDecoration:'none', color:'white'}} target='_blank'><i className="fa-solid fa-phone"></i></a>
           </div>
         </div>
       </div>

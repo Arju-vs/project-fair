@@ -1,10 +1,65 @@
 // rafce
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Collapse } from 'react-bootstrap'
 import uploadImg from '../assets/uploadImg.png'
+import SERVER_BASE_URL from '../../services/serverUrl';
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
+  const [preview,setPreview] = useState("")
+  const [existingProfilePic, setExistingProfilePic] = useState("");
+    // profilePic key of userDetails is used to store uploaded user profile pic file
+  const [userDetails,setUserDetails] = useState({
+    username:"",email:"",password:"",github:"",linkedin:"",profilePic:""
+  })
+  console.log(userDetails);
+  // get existing user details from session and store it to userDetails state
+  useEffect(()=>{
+    if(sessionStorage.getItem("user")){
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      setUserDetails({
+        ...userDetails,username:user.username,email:user.email,password:user.password,github:user.github,linkedin:user.linkedin
+      })
+      setExistingProfilePic(user.profilePic)
+    }
+  },[open])
+
+  // generate url for uploading profile pic
+  useEffect(()=>{
+    if(userDetails.profilePic){
+      setPreview(URL.createObjectURL(userDetails.profilePic))
+    }else{
+      setPreview("")
+    }
+  },[userDetails.profilePic])
+
+  const handleUserUpdate = async ()=>{
+    // 1.get all user details
+    const {username,email,password,github,linkedin,profilePic} = userDetails
+    // if textfield have value
+    if(github && linkedin){
+      // reqBody
+      const reqBody = new FormData()
+      reqBody.append("username",username)
+      reqBody.append("email",email)
+      reqBody.append("password",password)
+      reqBody.append("github",github)
+      reqBody.append("linkedin",linkedin)
+      preview? reqBody.append("profilePic",profilePic) : reqBody.append("profilePic",existingProfilePic)
+      // reqheader
+      const token = sessionStorage.getItem("token")
+      if(token){
+          const reqHeader = {
+            "Content-Type":"multipart/form-data",
+            "Authorization":`Bearer ${token}`
+          }
+          // make api call
+      }
+    }else{
+      alert("Please fill the form completely!!!!!")
+    }
+
+  }
 
   return (
     <>
@@ -15,18 +70,23 @@ const Profile = () => {
     <Collapse in={open}>
         <div className='row container-fluid align-items-center justify-content-center shadow p-2 rounded' id="example-collapse-text">
           {/* upload picture */}
-          <label className='text-center'>
-            <input type="file" style={{display:'none'}} />
-            <img src={uploadImg} width={'200px'} height={'200px'} className='rounded-circle' alt="" />
+          <label className='text-center mb-2'>
+          <input onChange={e=>setUserDetails({...userDetails,profilePic:e.target.files[0]})} type="file" style={{display:'none'}} />
+            {
+              existingProfilePic=="" ?
+            <img src={preview?preview:uploadImg} width={'200px'} height={'200px'} className='rounded-circle' alt="" />
+              :
+            <img src={`${SERVER_BASE_URL}/uploads/${existingProfilePic}`} width={'200px'} height={'200px'} className='rounded-circle' alt="" />
+            }
           </label>
           <div className="mb-2 w-100">
-            <input type="text" placeholder='User GITHUB Link' className='form-control' />
+            <input value={userDetails.github} onChange={e=>setUserDetails({github:e.target.value})} type="text" placeholder='User GITHUB Link' className='form-control' />
           </div>
           <div className="mb-2 w-100">
-          <input type="text" placeholder='User LinkedIN Link' className='form-control' />
+          <input value={userDetails.linkedin} onChange={e=>setUserDetails({linkedin:e.target.value})}  type="text" placeholder='User LinkedIN Link' className='form-control' />
           </div>
           <div className="mb-2 w-100">
-            <button className="btn btn-warning">Update</button>
+            <button onClick={handleUserUpdate} className="btn btn-warning">Update</button>
           </div>
         </div>
       </Collapse>

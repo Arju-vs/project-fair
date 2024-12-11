@@ -2,11 +2,12 @@
 import React , {useContext, useEffect, useState} from 'react'
 import Add from './Add'
 import Edit from './Edit'
-import { userProjectsAPI } from '../../services/allAPI'
-import { addProjectContext } from '../contexts/ContextShare'
+import { deleteProjectAPI, userProjectsAPI } from '../../services/allAPI'
+import { addProjectContext, editProjectContext } from '../contexts/ContextShare'
 
 
 const View = () => {
+  const {editProjectResponse,setEditProjectResponse} = useContext(editProjectContext)
   const {addProjectResponse,setAddProjectResponse} = useContext(addProjectContext)
 
   //steps to display user projects
@@ -17,7 +18,7 @@ const View = () => {
    // 3.call that user project getting function using useEffect
    useEffect(()=>{
     getUserProjects()
-  },[addProjectResponse])
+  },[addProjectResponse,editProjectResponse])
 
   // 2. create a function for gettng all user projects and call api inside that function store all user projects inside the state
   const getUserProjects = async()=>{
@@ -37,7 +38,24 @@ const View = () => {
       }
     }
   }
+  //4. display the array in jsx
 
+  const removeProject = async(id)=>{
+    const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+        "Authorization" : `Bearer ${token}`
+      }
+      try{
+        const result = await deleteProjectAPI(id,reqHeader)
+        if(result.status==200){
+          getUserProjects()
+        }
+      }catch(err){
+        console.log(err);
+      }
+  }
+}
   return (
     <>
     <div className="d-flex justify-content-between mt-3">
@@ -54,7 +72,7 @@ const View = () => {
           <div className="d-flex align-items-center">
             <div> <Edit project={project} /> </div>
             <button className="btn"><a href={project?.github} target='_blank'><i className="fa-brands fa-github"></i></a></button>
-            <button className="btn"><i className="fa-solid fa-trash text-danger"></i></button>
+            <button onClick={removeProject} className="btn"><i className="fa-solid fa-trash text-danger"></i></button>
           </div>
         </div>
           ))

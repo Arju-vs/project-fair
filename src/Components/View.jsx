@@ -40,7 +40,7 @@ const View = () => {
   }
   //4. display the array in jsx
 
-  const removeProject = async(id)=>{
+  const removeProject = async (id)=>{
     const token = sessionStorage.getItem("token")
     if(token){
       const reqHeader = {
@@ -72,7 +72,7 @@ const View = () => {
           <div className="d-flex align-items-center">
             <div> <Edit project={project} /> </div>
             <button className="btn"><a href={project?.github} target='_blank'><i className="fa-brands fa-github"></i></a></button>
-            <button onClick={removeProject} className="btn"><i className="fa-solid fa-trash text-danger"></i></button>
+            <button onClick={()=>removeProject(project?._id)} className="btn"><i className="fa-solid fa-trash text-danger"></i></button>
           </div>
         </div>
           ))

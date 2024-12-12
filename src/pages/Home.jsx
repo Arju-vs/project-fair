@@ -71,7 +71,7 @@ const Home = () => {
 
     {/* Explore Our Projects */}
     <div className="my-5 text-center">
-      <h1 className="mb-5">Explore Our Projcts</h1>
+      <h1 className="mb-5">Explore Our Projects</h1>
       <marquee>
         <div className="d-flex">
           {

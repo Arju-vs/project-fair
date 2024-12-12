@@ -1,5 +1,5 @@
 // rafce
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import SERVER_BASE_URL from '../../services/serverUrl'
 import { updateProjectAPI } from '../../services/allAPI'
@@ -8,7 +8,7 @@ import { editProjectContext } from '../contexts/ContextShare'
 const Edit = ({project}) => {
   
   // project key in the props will hold project data to be displayed in edit component
-  const [editProjectResponse,setEditProjectResponse]= useState(editProjectContext)
+  const {editProjectResponse,setEditProjectResponse}= useContext(editProjectContext)
   const [preview,setPreview] = useState("")
   const [uploadFileStatus,setUploadFileStatus] = useState(false)
 
